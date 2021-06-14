@@ -5,3 +5,8 @@
   padding: 12px 30px;
   width: 50%;
 }
+
+.info {
+  display: flex;
+  align-items: center;
+}

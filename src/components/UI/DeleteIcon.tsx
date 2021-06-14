@@ -1,17 +1,17 @@
 import { FC } from "react";
-import { RiArrowDownSFill } from "react-icons/ri";
 import { IconContext } from "react-icons";
+import { TiDelete } from "react-icons/ti";
 
 import classes from "./Icon.module.css";
 
-const ArrowIcon: FC<{ style?: {}; onClick?: () => void }> = (props) => {
+const DeleteIcon: FC<{ style?: {}; onClick?: () => void }> = (props) => {
   return (
     <IconContext.Provider value={props.style || {}}>
       <span onClick={props.onClick} className={classes.icon}>
-        <RiArrowDownSFill />
+        <TiDelete />
       </span>
     </IconContext.Provider>
   );
 };
 
-export default ArrowIcon;
+export default DeleteIcon;

@@ -1,8 +1,12 @@
-import React from "react";
 import Menu from "./components/Menu/Menu";
+import MenusContextProvider from "./store/menu.context";
 
 function App() {
-  return <Menu />;
+  return (
+    <MenusContextProvider>
+      <Menu />
+    </MenusContextProvider>
+  );
 }
 
 export default App;
