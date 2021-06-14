@@ -1,31 +1,41 @@
-import React, { FC } from "react";
+import { FC, useState } from "react";
 
 import MenuItem from "./MenuItem";
 import { Item } from "../../models/menu";
 
 const SubMenu: FC<{
   depthLevel: number;
-  items: Array<Item>;
-  isOpen: boolean;
+  menuIndex: number;
+  items?: Array<Item>;
 }> = (props) => {
-  if (props.items == null) {
-    return;
-  }
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onClickHandler = () => {
+    setIsOpen((prevState) => {
+      return !prevState;
+    });
+  };
 
   return (
     <ul>
-      {props.items.map((item, index) => {
-        const menuName = `sidebar-submenu-${props.depthLevel}-${index}`;
+      {props.items!.map((item, itemIndex) => {
+        const itemkey = `item-${props.depthLevel}-${props.menuIndex}-${itemIndex}`;
         const hasSubMenu = item.children != null ? true : false;
+        const depthLevel = props.depthLevel + 1;
 
         return (
-          <li>
-            <MenuItem item={item} />
-            {hasSubMenu && (
+          <li key={itemkey}>
+            <MenuItem
+              item={item}
+              onClick={onClickHandler}
+              isOpen={isOpen}
+              depthLevel={depthLevel}
+            />
+            {hasSubMenu && isOpen && (
               <SubMenu
-                depthLevel={props.depthLevel}
+                menuIndex={itemIndex}
+                depthLevel={depthLevel}
                 items={item.children}
-                isOpen={item.isOpen}
               />
             )}
           </li>

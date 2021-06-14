@@ -1,6 +1,8 @@
-import React, { FC, useContext, Fragment, useState } from "react";
+import { FC, useContext, Fragment, useState } from "react";
 import { Item } from "../../models/menu";
 import SubMenu from "./SubMenu";
+
+import classes from "./Menu.module.css";
 
 const Menu = () => {
   const menus: Array<Item> = [
@@ -9,7 +11,6 @@ const Menu = () => {
     },
     {
       label: "Menu 2",
-      isOpen: false,
       children: [
         {
           label: "Sub Menu 1",
@@ -52,7 +53,11 @@ const Menu = () => {
   //   setActiveMenus(newActiveMenus);
   // };
 
-  return <SubMenu depthLevel={0} items={menus} isOpen={true}></SubMenu>;
+  return (
+    <div className={classes.menu}>
+      <SubMenu depthLevel={0} items={menus} menuIndex={0}></SubMenu>
+    </div>
+  );
 };
 
 export default Menu;

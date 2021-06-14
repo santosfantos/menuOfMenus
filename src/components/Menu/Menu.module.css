@@ -1,0 +1,8 @@
+.menu {
+  width: 700px;
+}
+
+.menu ul {
+  list-style-type: none;
+  padding: 0;
+}
