@@ -1,28 +1,54 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useState } from "react";
 import { Item } from "../../models/menu";
 import { MenusContext } from "../../store/menu.context";
 import AddIcon from "../UI/AddIcon";
+import ApproveIcon from "../UI/ApproveIcon";
+import CancelIcon from "../UI/CancelIcon";
 import DeleteIcon from "../UI/DeleteIcon";
 import EditIcon from "../UI/EditIcon";
 
 import classes from "./MenuActions.module.css";
 
-const MenuActions: FC<{ item: Item; id: string }> = (props) => {
-  const { removeItem } = useContext(MenusContext);
+const MenuActions: FC<{
+  item: Item;
+  label: string;
+  isEditMode: boolean;
+  editModeChange: () => void;
+}> = (props) => {
+  const { removeItem, addItem, editItem } = useContext(MenusContext);
 
   const onDeleteHandler = () => {
-    removeItem(props.id);
+    removeItem(props.item.id);
   };
 
-  const onAddHandler = () => {};
+  const onAddHandler = () => {
+    addItem(props.item, "new");
+  };
 
-  const onEditHandler = () => {};
+  const onCancelHandler = () => {
+    props.editModeChange();
+  };
+
+  const onConfirmHandler = () => {
+    props.editModeChange();
+    editItem(props.item.id, props.label);
+  };
 
   return (
     <div className={classes.actions}>
-      <DeleteIcon onClick={onDeleteHandler} />
-      <EditIcon onClick={onEditHandler} />
-      <AddIcon onClick={onAddHandler} />
+      {!props.isEditMode && (
+        <>
+          <DeleteIcon onClick={onDeleteHandler} />
+          <EditIcon onClick={props.editModeChange} />
+          <AddIcon onClick={onAddHandler} />
+        </>
+      )}
+      {props.isEditMode && (
+        <>
+          <CancelIcon onClick={onCancelHandler} />
+          <ApproveIcon onClick={onConfirmHandler} />
+        </>
+      )}
     </div>
   );
 };

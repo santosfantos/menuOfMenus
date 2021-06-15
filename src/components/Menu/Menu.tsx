@@ -1,11 +1,4 @@
-import {
-  FC,
-  useContext,
-  Fragment,
-  useState,
-  useCallback,
-  useEffect,
-} from "react";
+import { useContext, useState, useCallback, useEffect } from "react";
 import { Item } from "../../models/menu";
 import SubMenu from "./SubMenu";
 
@@ -34,7 +27,7 @@ const Menu = () => {
 
   return (
     <div className={classes.menu}>
-      <SubMenu depthLevel={0} items={items.children} menuIndex={0}></SubMenu>
+      <SubMenu depthLevel={0} items={items.children}></SubMenu>
     </div>
   );
 };

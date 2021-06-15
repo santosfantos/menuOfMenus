@@ -2,43 +2,34 @@ import { FC, useState } from "react";
 import { isEmpty } from "lodash";
 import MenuItem from "./MenuItem";
 import { Item } from "../../models/menu";
+import { MenusContext } from "../../store/menu.context";
+import { useContext } from "react";
 
 const SubMenu: FC<{
   depthLevel: number;
-  menuIndex: number;
   items?: Array<Item>;
 }> = (props) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onClickHandler = () => {
-    setIsOpen((prevState) => {
-      return !prevState;
-    });
-  };
+  const { openedMenus } = useContext(MenusContext);
 
   return (
     <ul>
       {props.items!.map((item, itemIndex) => {
-        const itemkey = `item-${props.depthLevel}-${props.menuIndex}-${itemIndex}`;
+        const itemkey = `item-${
+          props.depthLevel
+        }-${itemIndex}-${Date.now().toString()}`;
         const hasSubMenu = isEmpty(item.children) === true ? false : true;
+        const isOpen = openedMenus[item.id];
         const depthLevel = props.depthLevel + 1;
 
         return (
           <li key={itemkey}>
             <MenuItem
-              id={item.id}
               item={item}
               hasSubMenu={hasSubMenu}
-              onClick={onClickHandler}
-              isOpen={isOpen}
               depthLevel={depthLevel}
             />
-            {hasSubMenu && isOpen && (
-              <SubMenu
-                menuIndex={itemIndex}
-                depthLevel={depthLevel}
-                items={item.children}
-              />
+            {isOpen && (
+              <SubMenu depthLevel={depthLevel} items={item.children} />
             )}
           </li>
         );

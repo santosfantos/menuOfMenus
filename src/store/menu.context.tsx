@@ -1,23 +1,31 @@
 import { createContext, FC, useState } from "react";
 import { Item } from "../models/menu";
 
+import { isArray } from "lodash";
+
 type MenusContextObj = {
+  openedMenus: { [key: string]: boolean };
   items: Item;
   error: string | null;
   isLoading: boolean;
-  //   addItem: (label: string) => void;
+  addItem: (parent: Item, label: string) => void;
   removeItem: (id: string) => void;
+  editItem: (id: string, label: string) => void;
+  setIsOpen: (isOpen: boolean, id: string) => void;
   setIsLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   setItems: (item: Item) => void;
 };
 
 export const MenusContext = createContext<MenusContextObj>({
+  openedMenus: {},
   items: { id: "root", label: "menu" },
   error: null,
   isLoading: false,
-  //   addItem: (label: string) => {},
+  addItem: (parent: Item, label: string) => {},
   removeItem: (id: string) => {},
+  editItem: (id: string, label: string) => {},
+  setIsOpen: (isOpen: boolean, id: string) => {},
   setIsLoading: (loading: boolean) => {},
   setError: (error: string | null) => {},
   setItems: (item: Item) => {},
@@ -35,22 +43,18 @@ const MenusContextProvider: FC = (props) => {
           {
             id: "test4",
             label: "Sub Sub Menu 1",
-            children: [
-              {
-                id: "test5",
-                label: "Sub Sub Sub Menu 1",
-              },
-            ],
           },
         ],
       },
       {
         id: "test1",
         label: "Menu 1",
-      },
-      {
-        id: "test6",
-        label: "Sub Menu 2",
+        children: [
+          {
+            id: "test444",
+            label: "Sub Sub Menu 1",
+          },
+        ],
       },
     ],
   };
@@ -58,20 +62,36 @@ const MenusContextProvider: FC = (props) => {
   const [items, setItems] = useState<Item>(menusRoot);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [openedMenus, setIsOpen] = useState<{}>({});
 
-  //   const addTodoHandler = (todoText: string, priority: Priority) => {
-  //     const newTodo = new Todo(todoText, priority);
+  const addItemHandler = (parent: Item, label: string) => {
+    const newItem: Item = {
+      label,
+      id: Date.now().toString(),
+    };
 
-  //     setItems((prevItems) => {
-  //       let retVal = sortTodos(prevTodos.concat(newTodo));
+    setItems((prevItems) => {
+      if (parent.children == null) {
+        parent.children = [];
+      }
 
-  //       return retVal;
-  //     });
-  //   };
+      let retVal = deepAdd(prevItems, parent.id, newItem);
+
+      return retVal;
+    });
+  };
 
   const removeItemHandler = (id: string) => {
     setItems((prevState) => {
-      const currentItems = deepCopyFunction(prevState, id) as Item;
+      const currentItems = deepOmit(prevState, id) as Item;
+
+      return currentItems;
+    });
+  };
+
+  const editItemHandler = (id: string, label: string) => {
+    setItems((prevState) => {
+      const currentItems = deepEdit(prevState, id, label) as Item;
 
       return currentItems;
     });
@@ -95,12 +115,21 @@ const MenusContextProvider: FC = (props) => {
     });
   };
 
+  const setIsOpenHandler = (isOpen: boolean, id: string) => {
+    setIsOpen((prevState) => {
+      return { ...prevState, [id]: isOpen };
+    });
+  };
+
   const contextValue: MenusContextObj = {
+    openedMenus: openedMenus,
     items: items,
     error: error,
     isLoading: isLoading,
-    // addTodo: addTodoHandler,
+    addItem: addItemHandler,
     removeItem: removeItemHandler,
+    editItem: editItemHandler,
+    setIsOpen: setIsOpenHandler,
     setIsLoading: setIsLoadingHandler,
     setError: setErrorHandler,
     setItems: setItemsHandler,
@@ -113,7 +142,7 @@ const MenusContextProvider: FC = (props) => {
   );
 };
 
-const deepCopyFunction = (inObject: any, id: string) => {
+const deepOmit = (inObject: any, id: string) => {
   let outObject: { [index: string]: any }, value, key;
 
   if (inObject["id"] === id) {
@@ -125,17 +154,69 @@ const deepCopyFunction = (inObject: any, id: string) => {
   }
 
   // Create an array or object to hold the values
-  outObject = Array.isArray(inObject) ? [] : {};
+  outObject = isArray(inObject) ? [] : {};
 
   for (key in inObject) {
     value = inObject[key];
 
     // Recursively (deep) copy for nested objects, including arrays
-    value = deepCopyFunction(value, id);
+    value = deepOmit(value, id);
 
     if (value != null) {
       outObject[key] = value;
     }
+  }
+
+  return outObject;
+};
+
+const deepAdd = (inObject: any, parentId: string, newItem: Item) => {
+  let outObject: { [index: string]: any }, value, key;
+
+  if (typeof inObject !== "object" || inObject === null) {
+    return inObject;
+  }
+
+  // Create an array or object to hold the values
+  outObject = isArray(inObject) ? [] : {};
+
+  for (key in inObject) {
+    value = inObject[key];
+
+    // Recursively (deep) copy for nested objects, including arrays
+    value = deepAdd(value, parentId, newItem);
+
+    if (inObject["id"] === parentId && key === "children") {
+      value.push(newItem);
+    }
+
+    outObject[key] = value;
+  }
+
+  return outObject;
+};
+
+const deepEdit = (inObject: any, id: string, label: string) => {
+  let outObject: { [index: string]: any }, value, key;
+
+  if (typeof inObject !== "object" || inObject === null) {
+    return inObject;
+  }
+
+  // Create an array or object to hold the values
+  outObject = isArray(inObject) ? [] : {};
+
+  for (key in inObject) {
+    value = inObject[key];
+
+    // Recursively (deep) copy for nested objects, including arrays
+    value = deepEdit(value, id, label);
+
+    if (inObject["id"] === id && key === "label") {
+      value = label;
+    }
+
+    outObject[key] = value;
   }
 
   return outObject;
