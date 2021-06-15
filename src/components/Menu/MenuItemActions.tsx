@@ -9,9 +9,9 @@ import CancelIcon from "../UI/CancelIcon";
 import DeleteIcon from "../UI/DeleteIcon";
 import EditIcon from "../UI/EditIcon";
 
-import classes from "./MenuActions.module.css";
+import classes from "./MenuItemActions.module.css";
 
-const MenuActions: FC<{
+const MenuItemActions: FC<{
   item: Item;
   label: string;
   isEditMode: boolean;
@@ -55,4 +55,4 @@ const MenuActions: FC<{
   );
 };
 
-export default MenuActions;
+export default MenuItemActions;

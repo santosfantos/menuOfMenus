@@ -1,9 +1,10 @@
 import { FC, useContext, useState } from "react";
+import { get } from "lodash";
 
 import { Item } from "../../models/menu";
 import { MenusContext } from "../../store/menu.context";
 import ArrowIcon from "../UI/ArrowIcon";
-import MenuActions from "./MenuActions";
+import MenuItemActions from "./MenuItemActions";
 
 import classes from "./MenuItem.module.css";
 
@@ -12,15 +13,18 @@ const MenuItem: FC<{
   depthLevel: number;
   hasSubMenu: boolean;
 }> = (props) => {
+  const itemId = get(props, "item.id");
+  const itemLabel = get(props, "item.label");
+
   const { setIsOpen, openedMenus } = useContext(MenusContext);
   const [isEditMode, setEditMode] = useState<boolean>(false);
-  const [label, setLabel] = useState<string>(props.item.label);
+  const [label, setLabel] = useState<string>(itemLabel);
 
   const onClickHandler = () => {
     if (props.hasSubMenu === true) {
-      const isOpen = !openedMenus[props.item.id];
+      const isOpen = !openedMenus[itemId];
 
-      setIsOpen(isOpen, props.item.id);
+      setIsOpen(isOpen, itemId);
     }
   };
 
@@ -30,24 +34,24 @@ const MenuItem: FC<{
     });
 
     setLabel((prevState) => {
-      return props.item.label;
+      return itemLabel;
     });
   };
 
-  const onLabelChange = (label: string) => {
+  const onLabelChangeHandler = (label: string) => {
     setLabel((prevState) => {
       return label;
     });
   };
 
-  const arrowIconStyle = openedMenus[props.item.id]
+  const arrowIconStyle = openedMenus[itemId]
     ? { style: { transform: "rotate(180deg)" } }
     : "";
 
   return (
     <div className={classes.item}>
       <div className={classes.info}>
-        <MenuActions
+        <MenuItemActions
           item={props.item}
           label={label}
           isEditMode={isEditMode}
@@ -56,7 +60,7 @@ const MenuItem: FC<{
         <input
           disabled={!isEditMode}
           value={label}
-          onChange={(event) => onLabelChange(event.target.value)}
+          onChange={(event) => onLabelChangeHandler(event.target.value)}
           style={{ marginLeft: `${props.depthLevel * 20}px` }}
         />
       </div>
