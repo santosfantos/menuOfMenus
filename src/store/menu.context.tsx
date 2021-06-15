@@ -1,105 +1,89 @@
-import { createContext, FC, useState } from "react";
+import { createContext, FC, useEffect, useState } from "react";
 import { Item } from "../models/menu";
 
 import { isArray } from "lodash";
+import api from "../api/api";
 
 type MenusContextObj = {
   openedMenus: { [key: string]: boolean };
-  items: Item;
+  rootItem: Item | null;
   error: string | null;
-  isLoading: boolean;
+  addMenu: (item: Item) => void;
   addItem: (parent: Item, label: string) => void;
   removeItem: (id: string) => void;
   editItem: (id: string, label: string) => void;
   setIsOpen: (isOpen: boolean, id: string) => void;
-  setIsLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  setItems: (item: Item) => void;
+  setRootItem: (item: Item) => void;
 };
 
 export const MenusContext = createContext<MenusContextObj>({
   openedMenus: {},
-  items: { id: "root", label: "menu" },
+  rootItem: null,
   error: null,
-  isLoading: false,
+  addMenu: (item: Item) => {},
   addItem: (parent: Item, label: string) => {},
   removeItem: (id: string) => {},
   editItem: (id: string, label: string) => {},
   setIsOpen: (isOpen: boolean, id: string) => {},
-  setIsLoading: (loading: boolean) => {},
   setError: (error: string | null) => {},
-  setItems: (item: Item) => {},
+  setRootItem: (item: Item) => {},
 });
 
 const MenusContextProvider: FC = (props) => {
-  const menusRoot: Item = {
-    id: "root",
-    label: "Menu",
-    children: [
-      {
-        id: "test3",
-        label: "Sub Menu 1",
-        children: [
-          {
-            id: "test4",
-            label: "Sub Sub Menu 1",
-          },
-        ],
-      },
-      {
-        id: "test1",
-        label: "Menu 1",
-        children: [
-          {
-            id: "test444",
-            label: "Sub Sub Menu 1",
-          },
-        ],
-      },
-    ],
+  const [rootItem, setRootItem] = useState<Item | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [openedMenus, setIsOpen] = useState<{}>({});
+
+  const update = async (rootItem: Item | null) => {
+    try {
+      await api.updateMenuItems(rootItem);
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
-  const [items, setItems] = useState<Item>(menusRoot);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [openedMenus, setIsOpen] = useState<{}>({});
+  useEffect(() => {
+    update(rootItem);
+  }, [rootItem]);
+
+  const addMenuHandler = (item: Item) => {
+    setRootItem((prevState) => {
+      return item;
+    });
+  };
 
   const addItemHandler = (parent: Item, label: string) => {
     const newItem: Item = {
       label,
       id: Date.now().toString(),
+      children: [],
     };
 
-    setItems((prevItems) => {
+    setRootItem((prevItems) => {
       if (parent.children == null) {
         parent.children = [];
       }
 
-      let retVal = deepAdd(prevItems, parent.id, newItem);
+      const currentItem = deepAdd(prevItems, parent.id, newItem);
 
-      return retVal;
+      return currentItem;
     });
   };
 
   const removeItemHandler = (id: string) => {
-    setItems((prevState) => {
-      const currentItems = deepOmit(prevState, id) as Item;
+    setRootItem((prevState) => {
+      const currentItem = deepOmit(prevState, id) as Item;
 
-      return currentItems;
+      return currentItem;
     });
   };
 
   const editItemHandler = (id: string, label: string) => {
-    setItems((prevState) => {
-      const currentItems = deepEdit(prevState, id, label) as Item;
+    setRootItem((prevState) => {
+      const currentItem = deepEdit(prevState, id, label) as Item;
 
-      return currentItems;
-    });
-  };
-
-  const setIsLoadingHandler = (loading: boolean) => {
-    setIsLoading((prevState) => {
-      return loading;
+      return currentItem;
     });
   };
 
@@ -109,8 +93,8 @@ const MenusContextProvider: FC = (props) => {
     });
   };
 
-  const setItemsHandler = (items: Item) => {
-    setItems((prevState) => {
+  const setRootItemHandler = (items: Item) => {
+    setRootItem((prevState) => {
       return items;
     });
   };
@@ -123,16 +107,15 @@ const MenusContextProvider: FC = (props) => {
 
   const contextValue: MenusContextObj = {
     openedMenus: openedMenus,
-    items: items,
+    rootItem: rootItem,
     error: error,
-    isLoading: isLoading,
+    addMenu: addMenuHandler,
     addItem: addItemHandler,
     removeItem: removeItemHandler,
     editItem: editItemHandler,
     setIsOpen: setIsOpenHandler,
-    setIsLoading: setIsLoadingHandler,
     setError: setErrorHandler,
-    setItems: setItemsHandler,
+    setRootItem: setRootItemHandler,
   };
 
   return (
@@ -177,13 +160,11 @@ const deepAdd = (inObject: any, parentId: string, newItem: Item) => {
     return inObject;
   }
 
-  // Create an array or object to hold the values
   outObject = isArray(inObject) ? [] : {};
 
   for (key in inObject) {
     value = inObject[key];
 
-    // Recursively (deep) copy for nested objects, including arrays
     value = deepAdd(value, parentId, newItem);
 
     if (inObject["id"] === parentId && key === "children") {
@@ -203,13 +184,11 @@ const deepEdit = (inObject: any, id: string, label: string) => {
     return inObject;
   }
 
-  // Create an array or object to hold the values
   outObject = isArray(inObject) ? [] : {};
 
   for (key in inObject) {
     value = inObject[key];
 
-    // Recursively (deep) copy for nested objects, including arrays
     value = deepEdit(value, id, label);
 
     if (inObject["id"] === id && key === "label") {

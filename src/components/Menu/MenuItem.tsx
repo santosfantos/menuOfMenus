@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { FC } from "react";
+import { FC, useContext, useState } from "react";
+
 import { Item } from "../../models/menu";
 import { MenusContext } from "../../store/menu.context";
 import ArrowIcon from "../UI/ArrowIcon";

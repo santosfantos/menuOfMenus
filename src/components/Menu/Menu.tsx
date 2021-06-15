@@ -1,33 +1,60 @@
-import { useContext, useState, useCallback, useEffect } from "react";
-import { Item } from "../../models/menu";
+import { useContext, useCallback, useEffect } from "react";
+import { get } from "lodash";
+
+import { MenusContext } from "../../store/menu.context";
+import api from "../../api/api";
+
 import SubMenu from "./SubMenu";
+import Button from "../UI/Button";
+import { Item } from "../../models/menu";
 
 import classes from "./Menu.module.css";
-import { MenusContext } from "../../store/menu.context";
 
 const Menu = () => {
-  const { setItems, items } = useContext(MenusContext);
+  const { setError, setRootItem, addMenu, rootItem, error } = useContext(
+    MenusContext
+  );
 
-  // const fetchItems = useCallback(() => {
-  //   // setIsLoading(true);
-  //   setItems(menusRoot);
-  //   // try {
-  //   //   const response = await api.getTodos();
-  //   //   setItems(response.data);
-  //   // } catch (error) {
-  //   //   setError(error.message);
-  //   // } finally {
-  //   //   setIsLoading(false);
-  //   // }
-  // }, [setItems, menusRoot]);
+  const fetchItems = useCallback(async () => {
+    try {
+      let rootMenu;
+      const response = await api.getMenuItems();
 
-  // useEffect(() => {
-  //   fetchItems();
-  // }, [fetchItems]);
+      rootMenu = get(response, `data.item`);
+
+      setRootItem(rootMenu);
+    } catch (error) {
+      setError(error.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
+
+  const onClickHandler = async () => {
+    try {
+      const item: Item = {
+        label: "root",
+        id: Date.now().toString(),
+        children: [],
+      };
+
+      addMenu(item);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
   return (
     <div className={classes.menu}>
-      <SubMenu depthLevel={0} items={items.children}></SubMenu>
+      {error && <p>{error}</p>}
+      {rootItem != null && (
+        <SubMenu depthLevel={0} items={[rootItem]}></SubMenu>
+      )}
+      {!error && rootItem == null && (
+        <Button onClick={onClickHandler}>Add Menu</Button>
+      )}
     </div>
   );
 };

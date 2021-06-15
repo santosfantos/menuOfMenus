@@ -1,6 +1,8 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext } from "react";
+
 import { Item } from "../../models/menu";
 import { MenusContext } from "../../store/menu.context";
+
 import AddIcon from "../UI/AddIcon";
 import ApproveIcon from "../UI/ApproveIcon";
 import CancelIcon from "../UI/CancelIcon";
@@ -17,11 +19,11 @@ const MenuActions: FC<{
 }> = (props) => {
   const { removeItem, addItem, editItem } = useContext(MenusContext);
 
-  const onDeleteHandler = () => {
+  const onDeleteHandler = async () => {
     removeItem(props.item.id);
   };
 
-  const onAddHandler = () => {
+  const onAddHandler = async () => {
     addItem(props.item, "new");
   };
 
@@ -29,7 +31,7 @@ const MenuActions: FC<{
     props.editModeChange();
   };
 
-  const onConfirmHandler = () => {
+  const onConfirmHandler = async () => {
     props.editModeChange();
     editItem(props.item.id, props.label);
   };
