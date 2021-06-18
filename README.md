@@ -15,9 +15,9 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 In the project directory run:
 
-### 1) docker build --tag <<image-name>> .
+### 1) docker build --tag (image-name) .
 
-### 2) docker run --publish 3000:3000 <<image-name>>
+### 2) docker run --publish 3000:3000 (image-name)
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
