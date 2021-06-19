@@ -1,10 +1,10 @@
 .icon {
-  display: flex;
-  align-items: center;
-  padding: 0.2rem;
-}
+    display:     flex;
+    align-items: center;
+    padding:     0.2rem;
+    }
 
 .icon:hover {
-  cursor: pointer;
-  background-color: #ccc;
-}
+    cursor:           pointer;
+    background-color: #ccc;
+    }

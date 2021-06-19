@@ -1,17 +1,17 @@
-import { FC } from "react";
-import { IconContext } from "react-icons";
-import { TiPlus } from "react-icons/ti";
+import {FC} from "react";
+import {IconContext} from "react-icons";
+import {TiPlus} from "react-icons/ti";
 
 import classes from "./Icon.module.css";
 
 const AddIcon: FC<{ style?: {}; onClick?: () => void }> = (props) => {
-  return (
-    <IconContext.Provider value={props.style || {}}>
+    return (
+        <IconContext.Provider value={props.style || {}}>
       <span onClick={props.onClick} className={classes.icon}>
-        <TiPlus />
+        <TiPlus/>
       </span>
-    </IconContext.Provider>
-  );
+        </IconContext.Provider>
+    );
 };
 
 export default AddIcon;

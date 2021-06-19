@@ -1,7 +1,7 @@
-import { FC, useContext } from "react";
+import {FC, useContext} from "react";
 
-import { Item } from "../../models/menu";
-import { MenusContext } from "../../store/menu.context";
+import {Item} from "../../models/menu";
+import MenusContext from "../../store/menu-context";
 
 import AddIcon from "../UI/AddIcon";
 import ApproveIcon from "../UI/ApproveIcon";
@@ -12,47 +12,51 @@ import EditIcon from "../UI/EditIcon";
 import classes from "./MenuItemActions.module.css";
 
 const MenuItemActions: FC<{
-  item: Item;
-  label: string;
-  isEditMode: boolean;
-  editModeChange: () => void;
+    item: Item;
+    label: string;
+    isEditMode: boolean;
+    editModeChange: () => void;
 }> = (props) => {
-  const { removeItem, addItem, editItem } = useContext(MenusContext);
+    const {
+              removeItem,
+              addItem,
+              editItem
+          } = useContext(MenusContext);
 
-  const onDeleteHandler = async () => {
-    removeItem(props.item.id);
-  };
+    const onDeleteHandler = () => {
+        removeItem(props.item.id);
+    };
 
-  const onAddHandler = async () => {
-    addItem(props.item, "new");
-  };
+    const onAddHandler = () => {
+        addItem(props.item, "new");
+    };
 
-  const onCancelHandler = () => {
-    props.editModeChange();
-  };
+    const onCancelHandler = () => {
+        props.editModeChange();
+    };
 
-  const onConfirmHandler = async () => {
-    props.editModeChange();
-    editItem(props.item.id, props.label);
-  };
+    const onConfirmHandler = () => {
+        props.editModeChange();
+        editItem(props.item.id, props.label);
+    };
 
-  return (
-    <div className={classes.actions}>
-      {!props.isEditMode && (
-        <>
-          <DeleteIcon onClick={onDeleteHandler} />
-          <EditIcon onClick={props.editModeChange} />
-          <AddIcon onClick={onAddHandler} />
-        </>
-      )}
-      {props.isEditMode && (
-        <>
-          <CancelIcon onClick={onCancelHandler} />
-          <ApproveIcon onClick={onConfirmHandler} />
-        </>
-      )}
-    </div>
-  );
+    return (
+        <div className={classes.actions}>
+            {!props.isEditMode && (
+                <>
+                    <DeleteIcon onClick={onDeleteHandler}/>
+                    <EditIcon onClick={props.editModeChange}/>
+                    <AddIcon onClick={onAddHandler}/>
+                </>
+            )}
+            {props.isEditMode && (
+                <>
+                    <CancelIcon onClick={onCancelHandler}/>
+                    <ApproveIcon onClick={onConfirmHandler}/>
+                </>
+            )}
+        </div>
+    );
 };
 
 export default MenuItemActions;
