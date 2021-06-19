@@ -42,7 +42,7 @@ const MenuItem: FC<{ item: Item; depthLevel: number; hasSubMenu: boolean; }> = (
     const arrowIconStyle = openedMenus[itemId] ? {style: {transform: "rotate(180deg)"}} : "";
 
     return (
-        <div className={classes.item}>
+        <div className={classes.item} style={{marginLeft: `${props.depthLevel * 20}px`}}>
             <div className={classes.info}>
                 <MenuItemActions
                     item={props.item}
@@ -54,7 +54,6 @@ const MenuItem: FC<{ item: Item; depthLevel: number; hasSubMenu: boolean; }> = (
                     disabled={!isEditMode}
                     value={label}
                     onChange={(event) => onLabelChangeHandler(event.target.value)}
-                    style={{marginLeft: `${props.depthLevel * 20}px`}}
                 />
             </div>
             {props.hasSubMenu && (

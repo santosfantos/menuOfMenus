@@ -1,14 +1,4 @@
 .SubMenu {
     list-style-type: none;
     padding:         0;
-    width:           20em;
-    position:        absolute;
-    }
-
-.InnerSubMenu {
-    display:  none;
-    }
-
-.SubMenu:hover .InnerSubMenu {
-    display: block;
     }

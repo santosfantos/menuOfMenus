@@ -12,7 +12,7 @@ const SubMenu: FC<{ depthLevel: number; items: Array<Item>; }> = (props) => {
     const depthLevel    = props.depthLevel + 1;
 
     return (
-        <ul className={`${classes.SubMenu} ${props.depthLevel > 0 ? classes.InnerSubMenu : ''}`}>
+        <ul className={classes.SubMenu}>
             {props.items.map((item, itemIndex) => {
                 const itemKey    = `item-${props.depthLevel}-${itemIndex}-${Date.now().toString()}`;
                 const hasSubMenu = isEmpty(item.children) === true ? false : true;
