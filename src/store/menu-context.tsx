@@ -2,35 +2,30 @@ import {createContext} from "react";
 import {Item} from "../models/menu";
 
 export type MenusContextObj = {
-    openedMenus: { [key: string]: boolean };
     rootItem: Item | null;
     error: string | null;
     addMenu: (item: Item) => void;
     addItem: (parent: Item, label: string) => void;
     removeItem: (id: string) => void;
     editItem: (id: string, label: string) => void;
-    setMenuIsOpen: (isOpen: boolean, id: string) => void;
     setError: (error: string | null) => void;
     setRootItem: (item: Item) => void;
 };
 
 const MenusContext = createContext<MenusContextObj>({
-    openedMenus:   {},
-    rootItem:      null,
-    error:         null,
-    addMenu:       (item: Item) => {
+    rootItem:    null,
+    error:       null,
+    addMenu:     (item: Item) => {
     },
-    addItem:       (parent: Item, label: string) => {
+    addItem:     (parent: Item, label: string) => {
     },
-    removeItem:    (id: string) => {
+    removeItem:  (id: string) => {
     },
-    editItem:      (id: string, label: string) => {
+    editItem:    (id: string, label: string) => {
     },
-    setMenuIsOpen: (isOpen: boolean, id: string) => {
+    setError:    (error: string | null) => {
     },
-    setError:      (error: string | null) => {
-    },
-    setRootItem:   (item: Item) => {
+    setRootItem: (item: Item) => {
     },
 });
 

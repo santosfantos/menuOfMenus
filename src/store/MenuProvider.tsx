@@ -8,7 +8,6 @@ const MenusContextProvider: FC = (props) => {
     const [isInitialRender, setIsInitialRender] = useState<boolean>(true);
     const [rootItem, setRootItem]               = useState<Item | null>(null);
     const [error, setError]                     = useState<string | null>(null);
-    const [openedMenus, setMenuIsOpen]          = useState<{}>({});
 
     const update = async (rootItem: Item | null) => {
         if(isInitialRender === true) {
@@ -70,26 +69,15 @@ const MenusContextProvider: FC = (props) => {
         setRootItem(items);
     };
 
-    const setMenuIsOpenHandler = (isOpen: boolean, id: string) => {
-        setMenuIsOpen((prevState) => {
-            return {
-                ...prevState,
-                [id]: isOpen
-            };
-        });
-    };
-
     const contextValue: MenusContextObj = {
-        openedMenus:   openedMenus,
-        rootItem:      rootItem,
-        error:         error,
-        addMenu:       addMenuHandler,
-        addItem:       addItemHandler,
-        removeItem:    removeItemHandler,
-        editItem:      editItemHandler,
-        setMenuIsOpen: setMenuIsOpenHandler,
-        setError:      setErrorHandler,
-        setRootItem:   setRootItemHandler,
+        rootItem:    rootItem,
+        error:       error,
+        addMenu:     addMenuHandler,
+        addItem:     addItemHandler,
+        removeItem:  removeItemHandler,
+        editItem:    editItemHandler,
+        setError:    setErrorHandler,
+        setRootItem: setRootItemHandler,
     };
 
     return (

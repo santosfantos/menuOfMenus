@@ -8,24 +8,22 @@ import MenusContext from "../../store/menu-context";
 import classes from './SubMenu.module.css';
 
 const SubMenu: FC<{ depthLevel: number; items: Array<Item>; }> = (props) => {
-    const {openedMenus} = useContext(MenusContext);
-    const depthLevel    = props.depthLevel + 1;
+    const depthLevel = props.depthLevel + 1;
 
     return (
-        <ul className={classes.SubMenu}>
+        <ul className={`${classes.SubMenu} ${props.depthLevel === 0 ? classes.RootSubMenu : ''}`}>
             {props.items.map((item, itemIndex) => {
                 const itemKey    = `item-${props.depthLevel}-${itemIndex}-${Date.now().toString()}`;
                 const hasSubMenu = isEmpty(item.children) === true ? false : true;
-                const isOpen     = openedMenus[item.id];
 
                 return (
-                    <li key={itemKey}>
+                    <li key={itemKey} className={classes.DropDownSubMenu}>
                         <MenuItem
                             item={item}
                             hasSubMenu={hasSubMenu}
                             depthLevel={depthLevel}
                         />
-                        {isOpen && (
+                        {hasSubMenu && (
                             <SubMenu depthLevel={depthLevel} items={item.children}/>
                         )}
                     </li>

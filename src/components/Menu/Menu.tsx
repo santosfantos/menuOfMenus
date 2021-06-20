@@ -42,8 +42,8 @@ const Menu = () => {
     const onClickHandler = () => {
         try {
             const item: Item = {
-                label: "root",
-                id: Date.now().toString(),
+                label:    "root",
+                id:       Date.now().toString(),
                 children: [],
             };
 
