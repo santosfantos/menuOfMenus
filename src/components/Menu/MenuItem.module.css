@@ -1,12 +1,28 @@
 .item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 30px;
-  width: 50%;
-}
+    display:       flex;
+    padding:       4px 10px;
+    width:         200px;
+    margin-bottom: 5px;
+    }
+
+.item:hover {
+    background-color: #c6d2ec;
+    }
+
+.item input {
+    display:                    block;
+    width:                      100px;
+    font:                       inherit;
+    font-size:                  1rem;
+    background-color:           #f7f5ef;
+    border:                     none;
+    border-bottom:              2px solid #494844;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius:  0;
+    }
 
 .info {
-  display: flex;
-  align-items: center;
-}
+    display:      flex;
+    align-items:  center;
+    margin-right: 10px;
+    }

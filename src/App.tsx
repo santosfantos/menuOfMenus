@@ -1,12 +1,12 @@
 import Menu from "./components/Menu/Menu";
-import MenusContextProvider from "./store/menu.context";
+import MenusContextProvider from "./store/MenuProvider";
 
 function App() {
-  return (
-    <MenusContextProvider>
-      <Menu />
-    </MenusContextProvider>
-  );
+    return (
+        <MenusContextProvider>
+            <Menu/>
+        </MenusContextProvider>
+    );
 }
 
 export default App;

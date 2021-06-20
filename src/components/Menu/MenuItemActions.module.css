@@ -1,6 +1,7 @@
 .actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-right: 5px;
-}
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+    width:           60px;
+    margin-right:    10px;
+    }
